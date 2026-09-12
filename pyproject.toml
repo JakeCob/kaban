@@ -50,7 +50,11 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "RET", "ASYNC"]
-ignore = ["E501"]  # line-length is enforced by the formatter
+ignore = [
+    "E501",   # line-length is enforced by the formatter
+    "B008",   # false positive: FastAPI's Depends() belongs in default args
+    "UP046",  # PEP 695 generic syntax not universally friendly with Pydantic yet
+]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101"]

@@ -1,1 +1,1 @@
-"""Package placeholder — implemented in Phase 1+."""
+"""FastAPI routers grouped by resource."""

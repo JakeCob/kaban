@@ -1,4 +1,9 @@
-"""Alembic environment. Reads the database URL from the DATABASE_URL env var."""
+"""Alembic environment.
+
+Reads the database URL from DATABASE_URL. Migrations run against a sync connection
+(psycopg 3) even though the application uses async sessions — Alembic's own
+transaction machinery is sync.
+"""
 
 from __future__ import annotations
 
@@ -8,6 +13,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from tracker.db import models  # noqa: F401  ensure all mappings are imported
+from tracker.db.base import Base
+
 config = context.config
 
 if config.config_file_name is not None:
@@ -15,10 +23,10 @@ if config.config_file_name is not None:
 
 database_url = os.environ.get("DATABASE_URL")
 if database_url:
+    # Alembic expects a sync URL. psycopg 3's driver name is the same for sync/async.
     config.set_main_option("sqlalchemy.url", database_url)
 
-# When SQLAlchemy models are added in Phase 1, import Base.metadata here.
-target_metadata = None
+target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
@@ -27,6 +35,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True,
     )
     with context.begin_transaction():
         context.run_migrations()
@@ -39,7 +48,11 @@ def run_migrations_online() -> None:
         poolclass=pool.NullPool,
     )
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            compare_type=True,
+        )
         with context.begin_transaction():
             context.run_migrations()
 

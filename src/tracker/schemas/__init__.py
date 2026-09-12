@@ -1,1 +1,1 @@
-"""Package placeholder — implemented in Phase 1+."""
+"""Pydantic v2 request/response models."""

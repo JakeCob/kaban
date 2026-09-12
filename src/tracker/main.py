@@ -1,10 +1,12 @@
-"""FastAPI application entrypoint. Routers are wired in as they land in Phase 1+."""
+"""FastAPI application entrypoint. Assembles routers under /api/v1."""
 
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 
 from tracker import __version__
+from tracker.routers.inventory import router as inventory_router
+from tracker.routers.products import router as products_router
 
 app = FastAPI(
     title="Portfolio Tracker API",
@@ -14,8 +16,16 @@ app = FastAPI(
     openapi_url="/api/v1/openapi.json",
 )
 
+api_v1 = APIRouter(prefix="/api/v1")
 
-@app.get("/api/v1/jobs/health", tags=["jobs"])
+
+@api_v1.get("/jobs/health", tags=["jobs"])
 async def health() -> dict[str, str]:
     """Liveness heartbeat. Not gated by the API key — used by Railway health checks."""
     return {"status": "ok", "version": __version__}
+
+
+api_v1.include_router(products_router)
+api_v1.include_router(inventory_router)
+
+app.include_router(api_v1)

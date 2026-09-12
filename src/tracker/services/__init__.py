@@ -1,1 +1,1 @@
-"""Package placeholder — implemented in Phase 1+."""
+"""Business-logic services (thin layer between routers and the DB)."""

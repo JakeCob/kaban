@@ -13,15 +13,18 @@ from decimal import Decimal
 from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, Field
 
 from tracker.db.enums import ConditionType, ProductSource
 
 
 class PriceQuery(BaseModel):
-    """What we want a price for."""
+    """What we want a price for.
 
-    model_config = ConfigDict(frozen=True)
+    `hints` is an untyped bag used by adapters that need product context — a
+    Chrono24 URL, a Carousell search string — populated by the refresh service
+    from the product's `attributes` JSONB. Sources that don't need it ignore it.
+    """
 
     product_source: ProductSource
     external_product_id: str | None = None
@@ -29,6 +32,7 @@ class PriceQuery(BaseModel):
     condition: ConditionType | None = None
     grader: str | None = None
     grade_value: str | None = None
+    hints: dict[str, Any] = Field(default_factory=dict)
 
 
 class PriceResult(BaseModel):

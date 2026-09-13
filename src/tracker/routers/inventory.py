@@ -10,13 +10,21 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from tracker.db.session import get_session
 from tracker.deps import require_api_key
 from tracker.schemas.inventory import InventoryCreate, InventoryRead, InventoryUpdate
+from tracker.schemas.portfolio import PortfolioResponse
 from tracker.services import inventory as service
+from tracker.services.portfolio import compute_portfolio
 
 router = APIRouter(
     prefix="/inventory",
     tags=["inventory"],
     dependencies=[Depends(require_api_key)],
 )
+
+
+@router.get("/portfolio", response_model=PortfolioResponse)
+async def portfolio(session: AsyncSession = Depends(get_session)) -> PortfolioResponse:
+    """Grand totals in PHP + per-category breakdown. See SPEC §9 for FX semantics."""
+    return await compute_portfolio(session)
 
 
 @router.post("", response_model=InventoryRead, status_code=status.HTTP_201_CREATED)

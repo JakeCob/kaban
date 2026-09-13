@@ -6,8 +6,10 @@ from fastapi import APIRouter, FastAPI
 
 from tracker import __version__
 from tracker.routers.inventory import router as inventory_router
+from tracker.routers.jobs import router as jobs_router
 from tracker.routers.prices import router as prices_router
 from tracker.routers.products import router as products_router
+from tracker.routers.resale import router as resale_router
 
 app = FastAPI(
     title="Portfolio Tracker API",
@@ -29,5 +31,7 @@ async def health() -> dict[str, str]:
 api_v1.include_router(products_router)
 api_v1.include_router(inventory_router)
 api_v1.include_router(prices_router)
+api_v1.include_router(resale_router)
+api_v1.include_router(jobs_router)
 
 app.include_router(api_v1)

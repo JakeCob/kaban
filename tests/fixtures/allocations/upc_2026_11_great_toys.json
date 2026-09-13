@@ -1,0 +1,53 @@
+[
+  {
+    "name": "VIP, early deposit, no oversubscription",
+    "inputs": {
+      "quantity_requested": 5,
+      "customer_tier": "VIP",
+      "deposit_timestamp": "2026-11-01T09:00:00Z",
+      "cutoff_timestamp":  "2026-11-11T09:00:00Z"
+    },
+    "expected": {
+      "expected_units": 5.0,
+      "p50_units": 5,
+      "p90_units": 5,
+      "p10_units": 3,
+      "confidence": 0.5
+    }
+  },
+  {
+    "name": "New customer, late deposit, 2x oversubscribed",
+    "inputs": {
+      "quantity_requested": 3,
+      "customer_tier": "New",
+      "deposit_timestamp": "2026-11-04T09:00:00Z",
+      "cutoff_timestamp":  "2026-11-01T09:00:00Z",
+      "known_oversubscription_ratio": 2.0
+    },
+    "expected": {
+      "expected_units": 0.18,
+      "p50_units": 0,
+      "p90_units": 1,
+      "p10_units": 0,
+      "confidence": 0.75
+    }
+  },
+  {
+    "name": "Regular, on-time deposit, 3x oversubscribed, big prior spend",
+    "inputs": {
+      "quantity_requested": 10,
+      "customer_tier": "Regular",
+      "deposit_timestamp": "2026-11-01T09:00:00Z",
+      "cutoff_timestamp":  "2026-11-03T09:00:00Z",
+      "known_oversubscription_ratio": 3.0,
+      "prior_spend_php": "200000"
+    },
+    "expected": {
+      "expected_units": 1.96,
+      "p50_units": 2,
+      "p90_units": 3,
+      "p10_units": 1,
+      "confidence": 1.0
+    }
+  }
+]

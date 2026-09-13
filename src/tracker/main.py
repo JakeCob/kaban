@@ -5,8 +5,10 @@ from __future__ import annotations
 from fastapi import APIRouter, FastAPI
 
 from tracker import __version__
+from tracker.routers.allocations import router as allocations_router
 from tracker.routers.inventory import router as inventory_router
 from tracker.routers.jobs import router as jobs_router
+from tracker.routers.preorders import router as preorders_router
 from tracker.routers.prices import router as prices_router
 from tracker.routers.products import router as products_router
 from tracker.routers.resale import router as resale_router
@@ -32,6 +34,8 @@ api_v1.include_router(products_router)
 api_v1.include_router(inventory_router)
 api_v1.include_router(prices_router)
 api_v1.include_router(resale_router)
+api_v1.include_router(preorders_router)
+api_v1.include_router(allocations_router)
 api_v1.include_router(jobs_router)
 
 app.include_router(api_v1)

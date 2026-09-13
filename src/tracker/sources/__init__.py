@@ -1,1 +1,1 @@
-"""Package placeholder — implemented in Phase 1+."""
+"""Pricing sources — one adapter per upstream data provider."""

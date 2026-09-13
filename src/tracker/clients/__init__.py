@@ -1,1 +1,1 @@
-"""Package placeholder — implemented in Phase 1+."""
+"""HTTP clients for external services."""
